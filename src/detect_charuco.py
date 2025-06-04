@@ -25,14 +25,14 @@ def create_charuco_boards(board_size, board_physical_size, marker_length_ratio):
     ids1 = np.arange(0, n_markers, dtype=int)
     ids2 = np.arange(n_markers, 2 * n_markers, dtype=int)
 
-    board1 = cv2.aruco.CharucoBoard_create(
+    board1 = cv2.aruco.CharucoBoard(
         board_size,      # (squares_x, squares_y)
         square_length,   # lato quadrato (metri)
         marker_length,   # lato marker (metri)
         ARUCO_DICT,      # il dizionario 5×5_100
         ids1             # ID usati in board1
     )
-    board2 = cv2.aruco.CharucoBoard_create(
+    board2 = cv2.aruco.CharucoBoard(
         board_size,
         square_length,
         marker_length,
@@ -49,13 +49,12 @@ def detect_single_charuco(img_gray, board, camera_matrix, dist_coeffs):
     # 1. rileva marker ArUco:
     corners, ids, _ = cv2.aruco.detectMarkers(
         img_gray, ARUCO_DICT, 
-        cameraMatrix=camera_matrix, 
-        distCoeff=dist_coeffs
+
     )
     if ids is None or len(ids) == 0:
         return None
     # 2. trova i Charuco corners:
-    flags = cv2.aruco.CALIB_USE_INTRINSIC_GUESS
+    
     _, charuco_corners, charuco_ids = cv2.aruco.interpolateCornersCharuco(
         markerCorners=corners,
         markerIds=ids,
