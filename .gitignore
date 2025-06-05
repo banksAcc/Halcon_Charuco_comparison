@@ -175,4 +175,5 @@ cython_debug/
 
 
 # da non passare nel git
-data/
+data/*
+!data/.gitkeep
