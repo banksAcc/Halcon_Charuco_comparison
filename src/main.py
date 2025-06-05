@@ -1,54 +1,18 @@
-# src/main.py
 import os
 import cv2
 import glob
 import time
-import argparse
 import numpy as np
 import csv
 
-from utils import load_camera_calibration, rotation_vector_to_quaternion, apply_pose_correction
+from utils import load_camera_calibration,pose_to_matrix, offset_pose_to_center, rotation_matrix_to_quaternion, matrix_to_pose, parse_args_from_json
 from detect_charuco import create_charuco_boards, detect_two_charuco
-from plate_pose import relative_pose
 
 # DISTANZA REALE TRA I MARKER: ipotenusa di 110 mm su X e Y (≈ 155.6 mm)
 EXPECTED_DISTANCE_M = 0.15556349 #np.sqrt(0.11**2 + 0.11**2)
 
-
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description="Rileva due CharucoBoard in ogni immagine e stima la posa del plate."
-    )
-    parser.add_argument(
-        "--input_dir", required=True,
-        help="Cartella contenente le immagini da processare"
-    )
-    parser.add_argument(
-        "--board_size", required=True, type=int, choices=[3,5],
-        help="Dimensione della CharucoBoard: 3 o 5 (3×3 o 5×5)"
-    )
-    parser.add_argument(
-        "--calib_file", required=True,
-        help="File .yaml con la calibrazione camera (OpenCV)"
-    )
-    parser.add_argument(
-        "--output_csv", required=True,
-        help="File CSV dove salvare tutte le pose"
-    )
-    # Se vuoi cambiare il rapporto marker_length/square_length default:
-    parser.add_argument(
-        "--marker_length_ratio", type=float, default=0.8,
-        help="rapporto (marker_length / square_length). Modificare se necessario."
-    )
-    parser.add_argument(
-    "--debug", action="store_true",
-    help="Mostra le immagini con gli assi dei marker rilevati (usa ESC per uscire)"
-)
-
-    return parser.parse_args()
-
 def main():
-    args = parse_args()
+    args = parse_args_from_json()
 
     # 1. Carico calibrazione camera
     camera_matrix, dist_coeffs = load_camera_calibration(args.calib_file)
@@ -67,9 +31,9 @@ def main():
     csv_writer = csv.writer(csv_file)
     csv_writer.writerow([
         "image_name",
-        "tx_rel", "ty_rel", "tz_rel",
-        "distance_m", "error_mm",
-        "qx_rel", "qy_rel", "qz_rel", "qw_rel",
+        "tx_rel_mm", "ty_rel_mm", "tz_rel_mm",
+        "distance_mm", "error_mm",
+        "qx_rel_mm", "qy_rel_mm", "qz_rel_mm", "qw_rel_mm",
         "elapsed_time_s"
     ])
 
@@ -105,22 +69,35 @@ def main():
         rvec1, tvec1 = pose_dict["C1"]
         rvec2, tvec2 = pose_dict["C2"]
 
-        # Applica correzione al secondo marker
-        #rvec2, tvec2 = apply_pose_correction(rvec2, tvec2, mode="rot_z_-90")
-        
+        # 1. Conversione in matrici 4x4
+        T1 = pose_to_matrix(rvec1, tvec1)
+        T2 = pose_to_matrix(rvec2, tvec2)
+
+        # 2. Applica offset per portarsi al centro della board
+        offset = np.array([0.0375, 0.0375, 0.0])
+        T1_center = offset_pose_to_center(T1, offset)
+        T2_center = offset_pose_to_center(T2, offset)
+
+        # 3. Trasformazione relativa
+        T_rel = np.linalg.inv(T1_center) @ T2_center
+        t_rel = T_rel[:3, 3]
+        R_rel = T_rel[:3, :3]
+        distance = np.linalg.norm(t_rel)
+
+        # 4. Quaternione
+        q_rel = rotation_matrix_to_quaternion(R_rel)
+
         if args.debug:
             debug_img = img_bgr.copy()
-            axis_length = 0.03  # 3 cm
-            cv2.drawFrameAxes(debug_img, camera_matrix, dist_coeffs, rvec1, tvec1, axis_length)
-            cv2.drawFrameAxes(debug_img, camera_matrix, dist_coeffs, rvec2, tvec2, axis_length)
+            axis_length = 0.035  #  3,5 cm
 
-            # Mostra angolo tra gli assi Z
-            R1, _ = cv2.Rodrigues(rvec1)
-            R2, _ = cv2.Rodrigues(rvec2)
-            z1 = R1[:, 2]
-            z2 = R2[:, 2]
-            angle_z = np.degrees(np.arccos(np.clip(np.dot(z1, z2), -1.0, 1.0)))
-            print(f"[DEBUG] Angolo tra Z1 e Z2 = {angle_z:.1f}°")
+            # Converti la posa centrata in rvec/tvec
+            rvec1_center, tvec1_center = matrix_to_pose(T1_center)
+            rvec2_center, tvec2_center = matrix_to_pose(T2_center)
+
+            # Disegna gli assi dal centro reale della board
+            cv2.drawFrameAxes(debug_img, camera_matrix, dist_coeffs, rvec1_center, tvec1_center, axis_length)
+            cv2.drawFrameAxes(debug_img, camera_matrix, dist_coeffs, rvec2_center, tvec2_center, axis_length)
 
             # Ridimensionamento e finestra interattiva
             scale_factor = 0.5
@@ -135,19 +112,20 @@ def main():
                 cv2.destroyAllWindows()
                 exit()
 
-        # 4.3. Calcolo trasformazione relativa (C1 → C2)
-        rvec_rel, tvec_rel = relative_pose(rvec1, tvec1, rvec2, tvec2)
-        distance = np.linalg.norm(tvec_rel[:2])
-        error_mm = (distance - EXPECTED_DISTANCE_M) * 1000.0
-        q_rel = rotation_vector_to_quaternion(rvec_rel)
         elapsed = time.time() - start_t
 
-        # 4.4. Scrivo su CSV
+        # Converti traslazione e distanza in mm
+        t_rel_mm = (t_rel * 1000.0).tolist()        # tx, ty, tz in mm
+        distance_mm = distance * 1000.0             # distanza in mm
+        error_mm = distance_mm - (EXPECTED_DISTANCE_M * 1000.0)
+
+        # 5. Salvataggio CSV (tutto in mm)
         csv_writer.writerow([
             img_name,
-            tvec_rel[0], tvec_rel[1], tvec_rel[2],
-            distance, error_mm,
-            q_rel[0], q_rel[1], q_rel[2], q_rel[3],
+            *t_rel_mm,
+            distance_mm,
+            error_mm,
+            *q_rel.tolist(),
             f"{elapsed:.4f}"
         ])
 
