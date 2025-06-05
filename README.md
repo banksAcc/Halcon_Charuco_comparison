@@ -18,7 +18,7 @@ The pipeline is designed for comparison with Halcon-based systems in industrial 
 ## 📁 Directory Structure
 
 ```
-.
+
 ├── src/
 │   ├── main.py                # Main script
 │   ├── detect_charuco.py      # ChArUco detection logic
