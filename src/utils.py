@@ -97,3 +97,38 @@ def invert_transform(rvec, tvec):
     t_inv = -R_inv.dot(tvec.reshape(3,))
     rvec_inv, _ = cv2.Rodrigues(R_inv)
     return rvec_inv.flatten(), t_inv.flatten()
+
+def apply_pose_correction(rvec, tvec, mode="rot_z_-90"):
+    
+    # assumo che rvec sia in formato rodrigues e creo matrice di rotazione
+    R, _ = cv2.Rodrigues(rvec)
+    # estendere matrice di rotazione 3x3 a 4x4 (ultima colonna contenente i tvec)
+
+    # 
+
+    if mode == "rot_z_90":
+        theta = np.radians(90)
+        Rz = np.array([
+            [np.cos(theta), -np.sin(theta), 0],
+            [np.sin(theta),  np.cos(theta), 0],
+            [0, 0, 1]
+        ])
+        R_corr = R @ Rz
+        t_corr = Rz.T @ tvec.reshape(3,)
+
+    elif mode == "rot_z_-90":
+        theta = np.radians(-90)
+        Rz = np.array([
+            [np.cos(theta), -np.sin(theta), 0],
+            [np.sin(theta),  np.cos(theta), 0],
+            [0, 0, 1]
+        ])
+        R_corr = R @ Rz
+        t_corr = Rz.T @ tvec.reshape(3,)
+
+    else:
+        R_corr = R
+        t_corr = tvec.reshape(3,)
+
+    rvec_corr, _ = cv2.Rodrigues(R_corr)
+    return rvec_corr, t_corr

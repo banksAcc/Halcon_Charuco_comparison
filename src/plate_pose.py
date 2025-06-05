@@ -58,3 +58,16 @@ def fuse_two_poses(rvec1, tvec1, rvec2, tvec2):
     rvec_fused, _ = cv2.Rodrigues(Rf)
     return rvec_fused.flatten(), t_fused
 
+def relative_pose(rvec_from, tvec_from, rvec_to, tvec_to):
+    """
+    Calcola la trasformazione relativa da marker1 (FROM) a marker2 (TO).
+    Ritorna: (rvec_rel, tvec_rel)
+    """
+    R_from, _ = cv2.Rodrigues(rvec_from)
+    R_to, _ = cv2.Rodrigues(rvec_to)
+    R_from_inv = R_from.T
+    t_from_inv = -R_from_inv @ tvec_from.reshape(3,)
+    R_rel = R_from_inv @ R_to
+    t_rel = R_from_inv @ (tvec_to.reshape(3,) - tvec_from.reshape(3,))
+    rvec_rel, _ = cv2.Rodrigues(R_rel)
+    return rvec_rel.flatten(), t_rel.flatten()
