@@ -135,6 +135,23 @@ Or edit `settings.json` to match your folder.
 
 ---
 
+### 📏 Gauge Capability Indexes (Cg & Cgk)
+
+To evaluate the **metrological performance** of the pose estimation system, two standard capability indices can be used:
+
+- **Cg (Gauge Capability)**  
+  Represents the **intrinsic capability** of the measurement system (in this case, the camera + pose estimation algorithm).  
+  It reflects **repeatability and precision**, but **ignores any bias** from the real value.  
+  A high Cg means the system consistently produces tightly grouped results.
+
+- **Cgk (Corrected Gauge Capability)**  
+  Like Cg, but also includes the **systematic error (bias)** between the measured and real value.  
+  It indicates **how reliable** the measurement is with respect to the actual reference (e.g., 155.6 mm center-to-center distance).  
+  A high Cgk confirms both precision and **accuracy**.
+
+These indices are commonly used in **gauge R&R (repeatability and reproducibility)** studies and can support quality control or certification processes in industrial settings.
+
+---
 ## 📄 License
 
 MIT License – Free for commercial and academic use.
