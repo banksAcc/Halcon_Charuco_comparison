@@ -8,24 +8,24 @@ import csv
 from utils import load_camera_calibration,pose_to_matrix, offset_pose_to_center, rotation_matrix_to_quaternion, matrix_to_pose, parse_args_from_json
 from detect_charuco import create_charuco_boards, detect_two_charuco
 
-# DISTANZA REALE TRA I MARKER: ipotenusa di 110 mm su X e Y (≈ 155.6 mm)
+# REAL DISTANCE BETWEEN MARKERS: hypotenuse of 110 mm on X and Y (≈ 155.6 mm)
 EXPECTED_DISTANCE_M = 0.15556349 #np.sqrt(0.11**2 + 0.11**2)
 
 def main():
     args = parse_args_from_json()
 
-    # 1. Carico calibrazione camera
+    # 1. Load camera calibration
     camera_matrix, dist_coeffs = load_camera_calibration(args.calib_file)
 
-    # 2. Creo i due CharucoBoard
+    # 2. Creation of 2 CharucoBoard
     board_size = (args.board_size, args.board_size)
-    board_physical_size = 0.075  # in metri (75 mm fisici)
+    board_physical_size = 0.075  # in meter
     marker_length_ratio = args.marker_length_ratio
     board1, board2, square_length, marker_length = create_charuco_boards(
         board_size, board_physical_size, marker_length_ratio
     )
 
-    # 3. Preparo il CSV di output (header + modalità append)
+    # 3. I prepare the output CSV (header + append mode)
     os.makedirs(os.path.dirname(args.output_csv), exist_ok=True)
     csv_file = open(args.output_csv, mode='w', newline='')
     csv_writer = csv.writer(csv_file)
@@ -37,7 +37,7 @@ def main():
         "elapsed_time_s"
     ])
 
-    # 4. Elenco immagini
+    # 4. Image List
     img_paths = sorted(glob.glob(os.path.join(args.input_dir, "*.*")))
     total = len(img_paths)
     print(f"[INFO] Trovate {total} immagini in {args.input_dir}")
@@ -54,13 +54,13 @@ def main():
             print(f"[WARNING] Immagine {img_name}: errore lettura → salto. ({e})")
             continue
 
-        # 4.1. Rilevo marker
+        # 4.1. Marker detection
         detected = detect_two_charuco(img_bgr, board1, board2, camera_matrix, dist_coeffs)
         if len(detected) != 2:
             print(f"[WARNING] {img_name}: rilevati {len(detected)} marker (ne servono 2) → salto.")
             continue
 
-        # 4.2. Recupero pose
+        # 4.2. Pose recovery
         pose_dict = {marker_id: (rvec, tvec) for marker_id, rvec, tvec in detected}
         if not ("C1" in pose_dict and "C2" in pose_dict):
             print(f"[WARNING] {img_name}: mancano marker C1 o C2 → salto.")
@@ -69,37 +69,37 @@ def main():
         rvec1, tvec1 = pose_dict["C1"]
         rvec2, tvec2 = pose_dict["C2"]
 
-        # 1. Conversione in matrici 4x4
+        # 1. Convert to 4x4 matrices
         T1 = pose_to_matrix(rvec1, tvec1)
         T2 = pose_to_matrix(rvec2, tvec2)
 
-        # 2. Applica offset per portarsi al centro della board
+        #2. Apply offset to move to the center of the board
         offset = np.array([0.0375, 0.0375, 0.0])
         T1_center = offset_pose_to_center(T1, offset)
         T2_center = offset_pose_to_center(T2, offset)
 
-        # 3. Trasformazione relativa
+        # 3. Relative transformation
         T_rel = np.linalg.inv(T1_center) @ T2_center
         t_rel = T_rel[:3, 3]
         R_rel = T_rel[:3, :3]
         distance = np.linalg.norm(t_rel)
 
-        # 4. Quaternione
+        # 4. Quaternion
         q_rel = rotation_matrix_to_quaternion(R_rel)
 
         if args.debug:
             debug_img = img_bgr.copy()
             axis_length = 0.035  #  3,5 cm
 
-            # Converti la posa centrata in rvec/tvec
+            # Convert centered pose to rvec/tvec
             rvec1_center, tvec1_center = matrix_to_pose(T1_center)
             rvec2_center, tvec2_center = matrix_to_pose(T2_center)
 
-            # Disegna gli assi dal centro reale della board
+            # Draw axes from the real center of the board
             cv2.drawFrameAxes(debug_img, camera_matrix, dist_coeffs, rvec1_center, tvec1_center, axis_length)
             cv2.drawFrameAxes(debug_img, camera_matrix, dist_coeffs, rvec2_center, tvec2_center, axis_length)
 
-            # Ridimensionamento e finestra interattiva
+            # Resizing and interactive window
             scale_factor = 0.5
             debug_resized = cv2.resize(debug_img, (0, 0), fx=scale_factor, fy=scale_factor)
             cv2.namedWindow("DEBUG", cv2.WINDOW_NORMAL)
@@ -108,18 +108,18 @@ def main():
             cv2.moveWindow("DEBUG", 100, 100)
 
             key = cv2.waitKey(0)
-            if key == 27:  # ESC per uscire
+            if key == 27:  # ESC for exit
                 cv2.destroyAllWindows()
                 exit()
 
         elapsed = time.time() - start_t
 
-        # Converti traslazione e distanza in mm
+        # Convert translation and distance to mm
         t_rel_mm = (t_rel * 1000.0).tolist()        # tx, ty, tz in mm
-        distance_mm = distance * 1000.0             # distanza in mm
+        distance_mm = distance * 1000.0             # distance in mm
         error_mm = distance_mm - (EXPECTED_DISTANCE_M * 1000.0)
 
-        # 5. Salvataggio CSV (tutto in mm)
+        # 5. CSV save (all in mm)
         csv_writer.writerow([
             img_name,
             *t_rel_mm,
@@ -132,7 +132,7 @@ def main():
         print(f"[{idx}/{total}] {img_name} → Δ= {distance:.4f} m (err={error_mm:+.1f} mm)")
 
     csv_file.close()
-    print(f"[DONE] Output salvato in: {args.output_csv}")
+    print(f"[DONE] Output saved in: {args.output_csv}")
 
 if __name__ == "__main__":
     main()
