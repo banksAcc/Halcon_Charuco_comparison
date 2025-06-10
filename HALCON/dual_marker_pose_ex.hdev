@@ -3,81 +3,122 @@
 <procedure name="main">
 <interface/>
 <body>
+<c>* Script Halcon per analisi marker dotted</c>
+<c>* Input: </c>
+<c>*   - Cartella con immagini (formato qualsiasi supportato da Halcon)</c>
+<c>*   - File di calibrazione camera in formato JSON</c>
+<c>*   - File caltab.descr standard per marker 75mm</c>
+<c>* Output:</c>
+<c>*   - File CSV con risultati per immagini dove sono rilevati entrambi i marker</c>
 <c></c>
-<c>* HALCON script: Dual Caltab Pose Estimation with Relative Transformation</c>
-<c>* Descrizione:</c>
-<c>*   - Rileva due caltab (marker di calibrazione) da un'immagine</c>
-<c>*   - Calcola la pose di entrambi rispetto alla camera</c>
-<c>*   - Trasla la pose al centro del marker (+37.5 mm su X e Y)</c>
-<c>*   - Calcola la trasformazione relativa (T1⁻¹ * T2)</c>
-<c>*   - Estrae traslazione, distanza, e quaternioni</c>
-<c>*   - Scrive i risultati in un file CSV</c>
+<l>dev_update_off()</l>
+<l>dev_close_window()</l>
 <c></c>
-<c>* Parametri</c>
-<l>expected_distance_mm := 155.6</l>
-<l>offset_x := 37.5</l>
-<l>offset_y := 37.5</l>
-<l>offset_z := 0.0</l>
+<c>* --- Parametri configurabili ---</c>
+<l>imageFolder := '../data/charuco 3x3/in piano'</l>
+<l>outputCSVFile := '../outpu/results_halcon.csv'</l>
+<l>caltabFile := './caltab_075mm.descr'</l>
+<l>markerDiameter := 0.075</l>
+<l>markerDistanceNominal := 0.15556349</l>
+<l>import './CH_Find_Calib_Pattern.hdvp'</l>
 <c></c>
-<c>* -- Carica immagine e modello caltab</c>
-<l>read_image (Image, '/home/comau/Scrivania/progetto borsa 1 /IMMAGINI/charuco 5x5/in piano/Basler_acA2040-35gm__23324651__20250529_160713264_0000.tiff')</l>
+<c>* --- Caricamento parametri di calibrazione ---</c>
+<c>* Supponendo che il file JSON sia come nell'esempio</c>
 <c></c>
-<c>* -- Carica parametri di calibrazione camera</c>
-<c>* Assumi già convertiti in file Halcon .dat oppure inseriti direttamente</c>
-<l>CameraParam := ['area_scan_polynomial', 0.00340972, 0.00345, 712.5043, 781.75, 2064, 1544,                 -8355.593165, 696992927.827, -24601284614403.0, 3.6171082, -0.518271]</l>
+<l>gen_cam_par_area_scan_polynomial (0.022981071327594225, -8355.593165482436, 696992927.8266759, -24601284614403, 3.6171082013841898, -0.518270981725917, 3.409715980655691e-6, 3.4500001220294507e-6, 712.5043161392205, 781.7500037920455, 2064, 1544, CameraParam)</l>
 <c></c>
-<c>* -- Trova i due caltab nella scena</c>
-<c>* Si assume che entrambi siano dello stesso tipo</c>
-<l>find_caltab (Image, CaltabRegion1, 3, 7, 'caltab_3x3_descr.dat')</l>
-<l>find_caltab (Image, CaltabRegion2, 3, 7, 'caltab_3x3_descr.dat')</l>
 <c></c>
-<c>* -- Calcola la pose dei due caltab rispetto alla camera</c>
-<l>find_caltab_pose (CaltabRegion1, CameraParam, 'caltab_3x3_descr.dat', Pose1, Quality1)</l>
-<l>find_caltab_pose (CaltabRegion2, CameraParam, 'caltab_3x3_descr.dat', Pose2, Quality2)</l>
-<c></c>
-<c>* -- Trasforma pose in matrice 4x4</c>
-<l>pose_to_hom_mat3d (Pose1, H1)</l>
-<l>pose_to_hom_mat3d (Pose2, H2)</l>
-<c></c>
-<c>* -- Applica offset centro marker (+37.5mm)</c>
-<l>hom_mat3d_translate (H1, offset_x, offset_y, offset_z, H1_center)</l>
-<l>hom_mat3d_translate (H2, offset_x, offset_y, offset_z, H2_center)</l>
-<c></c>
-<c>* -- Calcola trasformazione relativa: T1⁻¹ * T2</c>
-<l>hom_mat3d_invert (H1_center, H1_inv)</l>
-<l>hom_mat3d_compose (H1_inv, H2_center, H_rel)</l>
-<c></c>
-<c>* -- Estrai traslazione</c>
-<l>hom_mat3d_to_pose (H_rel, PoseRel)</l>
-<l>get_pose_param (PoseRel, 'x', Tx)</l>
-<l>get_pose_param (PoseRel, 'y', Ty)</l>
-<l>get_pose_param (PoseRel, 'z', Tz)</l>
-<l>vector_length_3d (Tx, Ty, Tz, Distance)</l>
-<c></c>
-<c>* -- Calcola errore rispetto distanza attesa</c>
-<l>Error_mm := Distance - expected_distance_mm</l>
-<c></c>
-<c>* -- Estrai quaternione dalla rotazione</c>
-<l>quaternion_from_pose (PoseRel, Qx, Qy, Qz, Qw)</l>
-<c></c>
-<c>* -- Scrivi risultati su CSV</c>
-<l>csv_file := 'output/halcon_results.csv'</l>
-<l>if (FileExists(csv_file) == false)</l>
-<c>    * scrive header</c>
-<l>    open_file (csv_file, 'append', FileHandle)</l>
-<l>    fwrite_string (FileHandle, 'image_name,tx_mm,ty_mm,tz_mm,distance_mm,error_mm,qx,qy,qz,qw\n')</l>
-<l>    close_file (FileHandle)</l>
+<c>* --- Inizializzazione file CSV ---</c>
+<l>file_exists(outputCSVFile, FileExists)</l>
+<l>if (FileExists == 1)</l>
+<l>    delete_file(outputCSVFile)</l>
 <l>endif</l>
+<l>open_file(outputCSVFile, 'append', FileHandle)</l>
+<l>fwrite_string(FileHandle, 'image_name,tx_rel_mm,ty_rel_mm,tz_rel_mm,distance_mm,error_mm,qx_rel,qy_rel,qz_rel,qw_rel,elapsed_time_s\n')</l>
+<l>*flush_buffer(FileHandle)</l>
 <c></c>
-<l>open_file (csv_file, 'append', FileHandle)</l>
-<l>fwrite_string (FileHandle, 'calibration_scene_01.tif,' + Tx + ',' + Ty + ',' + Tz + ',' + Distance + ',' + Error_mm + ',' + Qx + ',' + Qy + ',' + Qz + ',' + Qw + '\n')</l>
-<l>close_file (FileHandle)</l>
+<c>* --- Elaborazione immagini ---</c>
+<l>list_files(imageFolder, ['files','follow_links','recursive'], ImageFiles)</l>
+<l>tuple_regexp_select(ImageFiles, ['\\.(tif|tiff)$','ignore_case'], ImageFiles)</l>
 <c></c>
-<c>* -- Debug: visualizza assi pose originali</c>
-<l>dev_set_window (0)</l>
-<l>dev_display (Image)</l>
-<l>disp_pose_3d (Pose1, CameraParam, 0.075, 'red', 'green', 'blue')</l>
-<l>disp_pose_3d (Pose2, CameraParam, 0.075, 'orange', 'cyan', 'magenta')</l>
+<l>for ImageIndex := 0 to |ImageFiles| - 1 by 1</l>
+<l>    ImageFile := ImageFiles[ImageIndex]</l>
+<l>    read_image(Image, ImageFile)</l>
+<c>    </c>
+<c>    * Estrai nome file senza percorso</c>
+<l>    tuple_split(ImageFile, '/', PathParts)</l>
+<l>    ImageName := PathParts[|PathParts|-1]</l>
+<c>    </c>
+<c>    * Cronometra tempo di elaborazione</c>
+<l>    count_seconds(StartTime)</l>
+<c>    </c>
+<c>    * --- Ricerca marker ---</c>
+<l>    try</l>
+<c>        * Cerca primo marker</c>
+<l>        CH_Find_Calib_Pattern (Image, CameraParam, caltabFile, Found, Marker1Pose, CalibDataID)</l>
+<l>        CH_Find_Calib_Pattern (Image, CameraParam, caltabFile, Found, Marker2Pose, CalibDataID)</l>
+<c></c>
+<c>        * Calcola tempo di elaborazione</c>
+<l>        count_seconds(EndTime)</l>
+<l>        ElapsedTime := EndTime - StartTime</l>
+<c>        </c>
+<c>        * --- Calcola trasformazione relativa ---</c>
+<c>        * Pose marker1 -&gt; sistema di coordinate mondo</c>
+<l>        pose_to_hom_mat3d(Marker1Pose, HomMat3D1)</l>
+<c>        </c>
+<c>        * Pose marker2 -&gt; sistema di coordinate mondo</c>
+<l>        pose_to_hom_mat3d(Marker2Pose, HomMat3D2)</l>
+<c>        </c>
+<c>        * Trasformazione relativa: da marker1 a marker2</c>
+<l>        hom_mat3d_invert(HomMat3D1, HomMat3D1_Inv)</l>
+<l>        hom_mat3d_compose(HomMat3D1_Inv, HomMat3D2, HomMat3D_Rel)</l>
+<c>        </c>
+<c>        * Converti in pose relativa</c>
+<l>        hom_mat3d_to_pose(HomMat3D_Rel, RelPose)</l>
+<c>        </c>
+<c>        * Estrai componenti della pose</c>
+<l>        tx := RelPose[0] * 1000  // Converti in mm</l>
+<l>        ty := RelPose[1] * 1000</l>
+<l>        tz := RelPose[2] * 1000</l>
+<c>        </c>
+<c>        * Calcola distanza effettiva</c>
+<l>        distance := sqrt(tx*tx + ty*ty + tz*tz)</l>
+<c>        </c>
+<c>        * Calcola errore rispetto alla distanza nominale</c>
+<l>        error := distance - (markerDistanceNominal * 1000)</l>
+<c>        </c>
+<c>        * Estrai quaternione dalla pose relativa</c>
+<l>        pose_to_quat(RelPose, Qx)</l>
+<l>        pose_to_quat(RelPose, Qy)</l>
+<l>        pose_to_quat(RelPose, Qz)</l>
+<l>        pose_to_quat(RelPose, Qw)</l>
+<c>        </c>
+<c>        * --- Scrivi risultati nel CSV ---</c>
+<l>        Line := ImageName + ',' + tx + ',' + ty + ',' + tz + ',' + distance + ',' + error + ',' + Qx + ',' + Qy + ',' + Qz + ',' + Qw + ',' + ElapsedTime + '\n'</l>
+<l>        fwrite_string(FileHandle, Line)</l>
+<l>        flush_buffer(FileHandle)</l>
+<c>        </c>
+<c>        * Messaggio di debug</c>
+<l>        dev_display(Image)</l>
+<c>        *dev_display_marker_results(Marker1Pose, Marker2Pose, CameraParam)</c>
+<l>        disp_message(3600, 'Marker trovati in ' + ImageName + '\nTempo: ' + ElapsedTime + 's', 'window', 12, 12, 'black', 'true')</l>
+<l>        disp_continue_message(3600, 'black', 'true')</l>
+<l>        stop()</l>
+<c>        </c>
+<l>    catch (Exception)</l>
+<c>        * Se non trova entrambi i marker, salta l'immagine</c>
+<l>        continue</l>
+<l>    endtry</l>
+<l>endfor</l>
+<c></c>
+<c>* --- Pulizia finale ---</c>
+<l>close_file(FileHandle)</l>
+<l>dev_update_on()</l>
+<c></c>
+<c></c>
+<c></c>
+<c>    </c>
+<c> </c>
 </body>
 <docu id="main">
 <parameters/>
