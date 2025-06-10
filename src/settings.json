@@ -1,8 +1,0 @@
-{
-  "input_dir": "../data/charuco3x3",
-  "board_size": 3,
-  "calib_file": "../calibration/camera_calib.yaml",
-  "output_csv": "../output/results.csv",
-  "marker_length_ratio": 0.76,
-  "debug": false
-}

@@ -66,9 +66,9 @@ Edit `settings.json`:
 
 ```json
 {
-  "input_dir": "data/charuco5x5",
+  "input_dir": "../data/charuco5x5",
   "board_size": 5,
-  "calib_file": "calibration/camera_calib.yaml",
+  "calib_file": "../../calibration/camera_calib_opencv.yaml",
   "output_csv": "output/results.csv",
   "marker_length_ratio": 0.752,
   "debug": false
@@ -113,13 +113,13 @@ We provide a test dataset with real camera acquisitions:
 After downloading, place the dataset under:
 
 ```
-data/charuco5x5/
+../data/charuco5x5/
 ```
 
 or
 
 ```
-data/charuco3x4/
+../data/charuco3x4/
 ```
 
 Or edit `settings.json` to match your folder.
