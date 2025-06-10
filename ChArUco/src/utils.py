@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import yaml
 import json
+import os
 
 from scipy.spatial.transform import Rotation as R
 
@@ -16,6 +17,8 @@ def parse_args_from_json(config_path="settings.json"):
                 setattr(self, key, value)
 
     try:
+        base_dir = os.path.dirname(__file__)  # directory dove si trova main.py
+        config_path = os.path.join(base_dir, "settings.json")
         with open(config_path, "r") as f:
             config = json.load(f)
     except FileNotFoundError:
@@ -31,6 +34,11 @@ def load_camera_calibration(yaml_path):
     Reads OpenCV intrinsic and distortion parameters from YAML files.
     Returns camera_matrix (3×3) and dist_coeffs (1×8 vector), in pixel units.
     """
+    # Se yaml_path è relativo, rendilo relativo al file corrente (__file__)
+    if not os.path.isabs(yaml_path):
+        base_dir = os.path.dirname(__file__)
+        yaml_path = os.path.join(base_dir, yaml_path)
+
     with open(yaml_path, 'r') as f:
         data = yaml.safe_load(f)
     oc = data['IntrinsicCalibration']['OpenCV']
