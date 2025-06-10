@@ -24,7 +24,6 @@
 <l>set_calib_data_calib_object (CalibDataID, 0, CalibObjDescr)</l>
 <l>set_calib_data (CalibDataID, 'model', 'general', 'optimization_method', 'nonlinear')</l>
 <l>try</l>
-<l>    dev_display(Image)</l>
 <l>    find_calib_object (Image, CalibDataID, 0, 0, 0, [], [])</l>
 <l>    get_calib_data_observ_points (CalibDataID, 0, 0, 0, RCoord, CCoord, Index, CalibPlatePose1)</l>
 <l>    get_calib_data_observ_contours (Caltab1, CalibDataID, 'caltab', 0, 0, 0)</l>
@@ -44,11 +43,13 @@
 <l>    dev_disp_3d_coord_system (WinHandle, CameraParams, CalibPlatePose1, 0.02)</l>
 <l>    dev_disp_3d_coord_system (WinHandle, CameraParams, CalibPlatePose2, 0.02)</l>
 <l>    dev_set_color ('green')</l>
+<c>    </c>
 <l>    dev_display (Caltab1)</l>
 <l>    dev_display (Caltab2)</l>
+<c>    </c>
 <l>    Found1 := true</l>
 <l>    Found2 := true</l>
-<c></c>
+<c>    </c>
 <l>catch (Exception)</l>
 <l>    CalibPlatePose1 := []</l>
 <l>    CalibPlatePose2 := []</l>

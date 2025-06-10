@@ -12,14 +12,12 @@
 <c>*   - File CSV con risultati per immagini dove sono rilevati entrambi i marker</c>
 <c></c>
 <l>dev_update_off()</l>
-<l>dev_close_window()</l>
 <l>dev_open_window (0, 0, 512, 512, 'black', WindowHandle)</l>
 <c></c>
 <c>* --- Parametri configurabili ---</c>
 <l>imageFolder := '../data/charuco 3x3/in piano'</l>
 <l>outputCSVFile := '../output/results_halcon.csv'</l>
 <l>caltabFile := './caltab_075mm.descr'</l>
-<l>markerDiameter := 0.075</l>
 <l>markerDistanceNominal := 0.15556349</l>
 <l>import './CH_Find_Calib_Pattern_double.hdvp'</l>
 <c></c>
@@ -35,7 +33,7 @@
 <l>    delete_file(outputCSVFile)</l>
 <l>endif</l>
 <l>open_file(outputCSVFile, 'append', FileHandle)</l>
-<l>fwrite_string(FileHandle, 'image_name,tx_rel_mm,ty_rel_mm,tz_rel_mm,distance_mm,error_mm,qx_rel,qy_rel,qz_rel,qw_rel,elapsed_time_s\n')</l>
+<l>fwrite_string(FileHandle, 'image_name,M1_tx_mm,M1_ty_mm,M1_tz_mm,M2_tx_mm,M2_ty_mm,M2_tz_mm,tx_rel_mm,ty_rel_mm,tz_rel_mm,distance_mm,error_mm,qx_rel,qy_rel,qz_rel,qw_rel,elapsed_time_s\n')</l>
 <l>*flush_buffer(FileHandle)</l>
 <c></c>
 <c>* --- Elaborazione immagini ---</c>
@@ -57,10 +55,26 @@
 <l>    try</l>
 <c>        * Cerca primo marker</c>
 <l>        CH_Find_Calib_Pattern_double (Image, CameraParam, caltabFile, WindowHandle, Found1, Marker1Pose, Marker2Pose, Found2, CalibDataID)</l>
+<c>        </c>
+<c>        * Verifichiamo che siano stati trovati i due marker</c>
+<l>        if( Found1 == 0 or Found2 == 0)</l>
+<l>            dev_display(Image)</l>
+<l>            disp_message (WindowHandle, 'Errore - Trovato uno o nessun marker', 'window', 12, 12, 'red', 'true')</l>
+<l>            throw('Non ho trovato tutti i marker')</l>
+<l>        endif</l>
 <c></c>
 <c>        * Calcola tempo di elaborazione</c>
 <l>        count_seconds(EndTime)</l>
 <l>        ElapsedTime := EndTime - StartTime</l>
+<c>        </c>
+<c>        * -- Estrazione posiz. assoluta marker in mm --</c>
+<l>        M1_tx := Marker1Pose[0] * 1000</l>
+<l>        M1_ty := Marker1Pose[1] * 1000</l>
+<l>        M1_tz := Marker1Pose[2] * 1000</l>
+<c></c>
+<l>        M2_tx := Marker2Pose[0] * 1000</l>
+<l>        M2_ty := Marker2Pose[1] * 1000</l>
+<l>        M2_tz := Marker2Pose[2] * 1000</l>
 <c>        </c>
 <c>        * --- Calcola trasformazione relativa ---</c>
 <c>        * Pose marker1 -&gt; sistema di coordinate mondo</c>
@@ -94,17 +108,13 @@
 <l>        pose_to_quat(RelPose, Qw)</l>
 <c>        </c>
 <c>        * --- Scrivi risultati nel CSV ---</c>
-<l>        Line := ImageName + ',' + tx + ',' + ty + ',' + tz + ',' + distance + ',' + error + ',' + Qx + ',' + Qy + ',' + Qz + ',' + Qw + ',' + ElapsedTime + '\n'</l>
+<l>        Line := ImageName + ',' + M1_tx + ',' + M1_ty + ','+ M1_tz + ','+ M2_tx + ','+ M2_ty + ','+ M2_tz + ',' + tx + ',' + ty + ',' + tz + ',' + distance + ',' + error + ',' + Qx + ',' + Qy + ',' + Qz + ',' + Qw + ',' + ElapsedTime + '\n'</l>
 <l>        fwrite_string(FileHandle, Line)</l>
 <l>        flush_buffer(FileHandle)</l>
-<c>        </c>
-<c>        * Messaggio di debug</c>
-<l>        dev_display(Image)</l>
-<c>        *dev_display_marker_results(Marker1Pose, Marker2Pose, CameraParam)</c>
+<c></c>
 <l>        disp_message(3600, 'Marker trovati in ' + ImageName + '\nTempo: ' + ElapsedTime + 's', 'window', 12, 12, 'black', 'true')</l>
 <l>        disp_continue_message(3600, 'black', 'true')</l>
-<l>        stop()</l>
-<c>        </c>
+<c>               </c>
 <l>    catch (Exception)</l>
 <c>        * Se non trova entrambi i marker, salta l'immagine</c>
 <l>        continue</l>
@@ -114,11 +124,6 @@
 <c>* --- Pulizia finale ---</c>
 <l>close_file(FileHandle)</l>
 <l>dev_update_on()</l>
-<c></c>
-<c></c>
-<c></c>
-<c>    </c>
-<c> </c>
 </body>
 <docu id="main">
 <parameters/>
