@@ -31,6 +31,8 @@ def main():
     csv_writer = csv.writer(csv_file)
     csv_writer.writerow([
         "image_name",
+        "M1_tx_mm", "M1_ty_mm", "M1_tz_mm",
+        "M2_tx_mm", "M2_ty_mm", "M2_tz_mm",
         "tx_rel_mm", "ty_rel_mm", "tz_rel_mm",
         "distance_mm", "error_mm",
         "qx_rel_mm", "qy_rel_mm", "qz_rel_mm", "qw_rel_mm",
@@ -78,6 +80,10 @@ def main():
         T1_center = offset_pose_to_center(T1, offset)
         T2_center = offset_pose_to_center(T2, offset)
 
+        # Estrai traslazioni assolute dei due marker (già in metri)
+        t_abs1_mm = (T1_center[:3, 3] * 1000.0).tolist()
+        t_abs2_mm = (T2_center[:3, 3] * 1000.0).tolist()
+
         # 3. Relative transformation
         T_rel = np.linalg.inv(T1_center) @ T2_center
         t_rel = T_rel[:3, 3]
@@ -122,6 +128,8 @@ def main():
         # 5. CSV save (all in mm)
         csv_writer.writerow([
             img_name,
+            *t_abs1_mm,
+            *t_abs2_mm,
             *t_rel_mm,
             distance_mm,
             error_mm,
