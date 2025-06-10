@@ -1,0 +1,19 @@
+{
+    "IntrinsicCalibration": {
+        "Halcon": {
+            "calType": "area_scan_polynomial",
+            "cx": 0,
+            "cy": 0,
+            "focus": 0.004999999888241291,
+            "imageHeight": 0,
+            "imageWidth": 0,
+            "k1": 0,
+            "k2": 0,
+            "k3": 0,
+            "p1": 0,
+            "p2": 0,
+            "sx": 3.4500001220294507e-06,
+            "sy": 3.4500001220294507e-06
+        }
+    }
+}
