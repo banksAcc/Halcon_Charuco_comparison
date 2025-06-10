@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.2" halcon_version="24.11.1.0">
+<procedure name="CH_Find_Calib_Pattern_double">
+<interface>
+<io>
+<par name="Image" base_type="iconic" dimension="0"/>
+</io>
+<ic>
+<par name="CameraParams" base_type="ctrl" dimension="0"/>
+<par name="CalibObjDescr" base_type="ctrl" dimension="0"/>
+<par name="WinHandle" base_type="ctrl" dimension="0"/>
+</ic>
+<oc>
+<par name="Found1" base_type="ctrl" dimension="0"/>
+<par name="CalibPlatePose2" base_type="ctrl" dimension="0"/>
+<par name="CalibPlatePose1" base_type="ctrl" dimension="0"/>
+<par name="Found2" base_type="ctrl" dimension="0"/>
+<par name="CalibDataID" base_type="ctrl" dimension="0"/>
+</oc>
+</interface>
+<body>
+<l>create_calib_data ('hand_eye_stationary_cam', 1, 1, CalibDataID)</l>
+<l>set_calib_data_cam_param (CalibDataID, 0, [], CameraParams)</l>
+<l>set_calib_data_calib_object (CalibDataID, 0, CalibObjDescr)</l>
+<l>set_calib_data (CalibDataID, 'model', 'general', 'optimization_method', 'nonlinear')</l>
+<l>try</l>
+<l>    dev_display(Image)</l>
+<l>    find_calib_object (Image, CalibDataID, 0, 0, 0, [], [])</l>
+<l>    get_calib_data_observ_points (CalibDataID, 0, 0, 0, RCoord, CCoord, Index, CalibPlatePose1)</l>
+<l>    get_calib_data_observ_contours (Caltab1, CalibDataID, 'caltab', 0, 0, 0)</l>
+<c></c>
+<l>    gen_circle (Circle, RCoord, CCoord, 50)</l>
+<l>    threshold (Image,AllImage, 0,255)</l>
+<l>    difference (AllImage,Circle, RegionDifference)</l>
+<l>    reduce_domain (Image, RegionDifference, Image2)</l>
+<c>    </c>
+<l>    find_calib_object (Image2, CalibDataID, 0, 0, 0, [], [])</l>
+<l>    get_calib_data_observ_points (CalibDataID, 0, 0, 0, RCoord1, CCoord1, Index1, CalibPlatePose2)</l>
+<c>    </c>
+<l>    get_calib_data_observ_contours (Caltab2, CalibDataID, 'caltab', 0, 0, 0)</l>
+<c>    </c>
+<l>    dev_clear_window ()</l>
+<l>    dev_display(Image)</l>
+<l>    dev_disp_3d_coord_system (WinHandle, CameraParams, CalibPlatePose1, 0.02)</l>
+<l>    dev_disp_3d_coord_system (WinHandle, CameraParams, CalibPlatePose2, 0.02)</l>
+<l>    dev_set_color ('green')</l>
+<l>    dev_display (Caltab1)</l>
+<l>    dev_display (Caltab2)</l>
+<l>    Found1 := true</l>
+<l>    Found2 := true</l>
+<c></c>
+<l>catch (Exception)</l>
+<l>    CalibPlatePose1 := []</l>
+<l>    CalibPlatePose2 := []</l>
+<l>    Found1 := false</l>
+<l>    Found2 := false</l>
+<l>    return ()</l>
+<l>endtry</l>
+<c></c>
+<l>return ()</l>
+</body>
+<docu id="CH_Find_Calib_Pattern_double">
+<parameters>
+<parameter id="CalibDataID"/>
+<parameter id="CalibObjDescr"/>
+<parameter id="CalibPlatePose1"/>
+<parameter id="CalibPlatePose2"/>
+<parameter id="CameraParams"/>
+<parameter id="Found1"/>
+<parameter id="Found2"/>
+<parameter id="Image"/>
+<parameter id="WinHandle"/>
+</parameters>
+</docu>
+</procedure>
+</hdevelop>

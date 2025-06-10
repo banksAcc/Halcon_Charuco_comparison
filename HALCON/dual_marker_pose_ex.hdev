@@ -13,14 +13,15 @@
 <c></c>
 <l>dev_update_off()</l>
 <l>dev_close_window()</l>
+<l>dev_open_window (0, 0, 512, 512, 'black', WindowHandle)</l>
 <c></c>
 <c>* --- Parametri configurabili ---</c>
 <l>imageFolder := '../data/charuco 3x3/in piano'</l>
-<l>outputCSVFile := '../outpu/results_halcon.csv'</l>
+<l>outputCSVFile := '../output/results_halcon.csv'</l>
 <l>caltabFile := './caltab_075mm.descr'</l>
 <l>markerDiameter := 0.075</l>
 <l>markerDistanceNominal := 0.15556349</l>
-<l>import './CH_Find_Calib_Pattern.hdvp'</l>
+<l>import './CH_Find_Calib_Pattern_double.hdvp'</l>
 <c></c>
 <c>* --- Caricamento parametri di calibrazione ---</c>
 <c>* Supponendo che il file JSON sia come nell'esempio</c>
@@ -55,8 +56,7 @@
 <c>    * --- Ricerca marker ---</c>
 <l>    try</l>
 <c>        * Cerca primo marker</c>
-<l>        CH_Find_Calib_Pattern (Image, CameraParam, caltabFile, Found, Marker1Pose, CalibDataID)</l>
-<l>        CH_Find_Calib_Pattern (Image, CameraParam, caltabFile, Found, Marker2Pose, CalibDataID)</l>
+<l>        CH_Find_Calib_Pattern_double (Image, CameraParam, caltabFile, WindowHandle, Found1, Marker1Pose, Marker2Pose, Found2, CalibDataID)</l>
 <c></c>
 <c>        * Calcola tempo di elaborazione</c>
 <l>        count_seconds(EndTime)</l>

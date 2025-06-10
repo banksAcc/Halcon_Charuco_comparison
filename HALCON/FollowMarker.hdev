@@ -3,22 +3,18 @@
 <procedure name="main">
 <interface/>
 <body>
+<l>dev_open_window (0, 0, 512, 512, 'black', WindowHandle)</l>
 <l>ImageDir := '../data/charuco 3x3/in piano/Basler_acA2040-35gm__23324651__20250529_163554690_0000.tiff'</l>
 <l>caltab := './caltab_075mm.descr'</l>
 <l>import './CH_Find_Calib_Pattern.hdvp'</l>
-<c></c>
-<l>*list_files (ImageDir + '*.tiff', 'files', ImageFiles)</l>
 <c></c>
 <l>read_image(Image,ImageDir)</l>
 <c></c>
 <l>gen_cam_par_area_scan_polynomial (0.022981071327594225, -8355.593165482436, 696992927.8266759, -24601284614403, 3.6171082013841898, -0.518270981725917, 3.409715980655691e-6, 3.4500001220294507e-6, 712.5043161392205, 781.7500037920455, 2064, 1544, CameraParam)</l>
 <c></c>
-<l>* read_cam_par('/home/comau/Scrivania/progetto borsa 1/FollowMarker/basler_ac2040-gm.dat',CameraParam)</l>
+<l>CH_Find_Calib_Pattern_double (Image, CameraParam, caltab, WindowHandle, Found, CalibPlatePose1, CalibPlatePose2, Found2, CalibDataID)</l>
+<l>dev_close_window ()</l>
 <c></c>
-<c></c>
-<l>CH_Find_Calib_Pattern(Image,CameraParam,caltab,Found, CalibPlatePose, CalibDataID)</l>
-<c></c>
-<l>CH_Find_Calib_Pattern(Image,CameraParam,caltab,Found, CalibPlatePose_1, CalibDataID_1)</l>
 </body>
 <docu id="main">
 <parameters/>

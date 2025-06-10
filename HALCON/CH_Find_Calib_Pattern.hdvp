@@ -22,9 +22,14 @@
 <l> set_calib_data (CalibDataID, 'model', 'general', 'optimization_method', 'nonlinear')</l>
 <l>try</l>
 <l>    dev_display(Image)</l>
-<c></c>
 <l>    find_calib_object (Image, CalibDataID, 0, 0, 0, [], [])</l>
 <l>    get_calib_data_observ_points (CalibDataID, 0, 0, 0, RCoord, CCoord, Index, CalibPlatePose)</l>
+<c>    </c>
+<l>    gen_circle (Circle, RCoord, CCoord, 50)</l>
+<l>    threshold (Image,AllImage, 0,255)</l>
+<l>    difference (AllImage,Circle, RegionDifference)</l>
+<l>    reduce_domain (Image, RegionDifference, Image2)</l>
+<c>    </c>
 <l>    get_calib_data_observ_contours (Caltab, CalibDataID, 'caltab', 0, 0, 0)</l>
 <l>    dev_set_color ('green')</l>
 <l>    dev_display (Caltab)</l>
