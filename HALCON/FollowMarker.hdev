@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.2" halcon_version="24.11.1.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>ImageDir := '/home/comau/Scrivania/progetto borsa 1 /img_HALCON/'</l>
+<l>CaltaDescr := './caltab_075mm.descr'</l>
+<c></c>
+<l>list_files (ImageDir + '*.tiff', 'files', ImageFiles)</l>
+<c></c>
+<l>read_image(Image,'/home/comau/Scrivania/progetto borsa 1 /img_HALCON/Basler_acA2040-35gm__23324651__20250527_180924141_0000.tiff')</l>
+<c></c>
+<l>gen_cam_par_area_scan_polynomial (0.022981071327594225, -8355.593165482436, 696992927.8266759, -24601284614403, 3.6171082013841898, -0.518270981725917, 3.409715980655691e-6, 3.4500001220294507e-6, 712.5043161392205, 781.7500037920455, 2064, 1544, CameraParam)</l>
+<c></c>
+<l>*read_cam_par('/home/comau/Scrivania/progetto borsa 1 /FollowMarker/basler_ac2040-gm.dat',CameraParam)</l>
+<c></c>
+<c></c>
+<l>CH_Find_Calib_Pattern(Image,CameraParam,caltab,Found, CalibPlatePose, CalibDataID)</l>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>
