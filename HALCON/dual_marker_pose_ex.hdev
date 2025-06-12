@@ -10,13 +10,12 @@
 <c>*   - File caltab.descr standard per marker 75mm</c>
 <c>* Output:</c>
 <c>*   - File CSV con risultati per immagini dove sono rilevati entrambi i marker</c>
-<c></c>
 <l>dev_update_off()</l>
 <l>dev_open_window (0, 0, 512, 512, 'black', WindowHandle)</l>
 <c></c>
 <c>* --- Parametri configurabili ---</c>
-<l>imageFolder := '../data/stop_charuco3x3'</l>
-<l>outputCSVFile := '../output/results_halcon.csv'</l>
+<l>imageFolder := '../data/charuco 5x5/non in piano'</l>
+<l>outputCSVFile := '../output/results_halcon_no_piano.csv'</l>
 <l>caltabFile := './caltab_075mm.descr'</l>
 <l>markerDistanceNominal := 0.15556349</l>
 <l>import './CH_Find_Calib_Pattern_double.hdvp'</l>
@@ -24,8 +23,7 @@
 <c>* --- Caricamento parametri di calibrazione ---</c>
 <c>* Supponendo che il file JSON sia come nell'esempio</c>
 <c></c>
-<l>gen_cam_par_area_scan_polynomial (0.011944892438007823, -4394.694199488803, 1623348096.2886462, -209967566575519.38, -1.9828234866322656, -0.764025405925902, 1.5225704565559232e-06, 3.4500001220294507e-06, 1086.0063453428818, 771.097676941486, 2064, 1544, CameraParam)</l>
-<c></c>
+<l>gen_cam_par_area_scan_polynomial (0.012489543455098671, 683.07033875145, 1444616.9279945453, -577392161674.6691, -0.18197237434306351, -0.22865241980116785, 3.4472435195795457e-06, 3.4500001220294507e-06, 1054.9456419782853, 785.4829579841513, 2064, 1544, CameraParam)</l>
 <c></c>
 <c>* --- Inizializzazione file CSV ---</c>
 <l>file_exists(outputCSVFile, FileExists)</l>
@@ -34,7 +32,6 @@
 <l>endif</l>
 <l>open_file(outputCSVFile, 'append', FileHandle)</l>
 <l>fwrite_string(FileHandle, 'image_name,M1_tx_mm,M1_ty_mm,M1_tz_mm,M2_tx_mm,M2_ty_mm,M2_tz_mm,tx_rel_mm,ty_rel_mm,tz_rel_mm,distance_mm,error_mm,qx_rel,qy_rel,qz_rel,qw_rel,elapsed_time_s\n')</l>
-<l>*flush_buffer(FileHandle)</l>
 <c></c>
 <c>* --- Elaborazione immagini ---</c>
 <l>list_files(imageFolder, ['files','follow_links','recursive'], ImageFiles)</l>
@@ -55,8 +52,6 @@
 <l>    try</l>
 <c>        * Cerca primo marker</c>
 <l>        CH_Find_Calib_Pattern_double (Image, CameraParam, caltabFile, WindowHandle, Found1, Found2, Marker1Pose, Marker2Pose, CalibDataID_1, CalibDataID_2)</l>
-<c>        </c>
-<c></c>
 <c></c>
 <c>        * Verifichiamo che siano stati trovati i due marker</c>
 <l>        if( Found1 == 0 or Found2 == 0)</l>
