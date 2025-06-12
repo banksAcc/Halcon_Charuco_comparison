@@ -1,8 +1,8 @@
 {
-  "input_dir": "../../data/charuco3x3",
-  "board_size": 3,
+  "input_dir": "../../data/charuco5x5/no_linear",
+  "board_size": 5,
   "calib_file": "../../calibration/camera_calib_opencv.yaml",
-  "output_csv": "../../output/results_opencv.csv",
+  "output_csv": "../../output/results_opencv_5X5_linear.csv",
   "marker_length_ratio": 0.76,
-  "debug": false
+  "debug": true
 }
