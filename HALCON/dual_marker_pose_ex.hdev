@@ -14,8 +14,8 @@
 <l>dev_open_window (0, 0, 512, 512, 'black', WindowHandle)</l>
 <c></c>
 <c>* --- Parametri configurabili ---</c>
-<l>imageFolder := '../data/charuco 5x5/non in piano'</l>
-<l>outputCSVFile := '../output/results_halcon_no_piano.csv'</l>
+<l>imageFolder := '../data/charuco 5x5/in piano'</l>
+<l>outputCSVFile := '../output/results_halcon_5x5_linear.csv'</l>
 <l>caltabFile := './caltab_075mm.descr'</l>
 <l>markerDistanceNominal := 0.15556349</l>
 <l>import './CH_Find_Calib_Pattern_double.hdvp'</l>
@@ -99,10 +99,11 @@
 <l>        error := distance - (markerDistanceNominal * 1000)</l>
 <c>        </c>
 <c>        * Estrai quaternione dalla pose relativa</c>
-<l>        pose_to_quat(RelPose, Qx)</l>
-<l>        pose_to_quat(RelPose, Qy)</l>
-<l>        pose_to_quat(RelPose, Qz)</l>
-<l>        pose_to_quat(RelPose, Qw)</l>
+<l>        pose_to_quat(RelPose, Quat)</l>
+<l>        Qx := Quat[0]</l>
+<l>        Qy := Quat[1]</l>
+<l>        Qz := Quat[2]</l>
+<l>        Qw := Quat[3]</l>
 <c>        </c>
 <c>        * --- Scrivi risultati nel CSV ---</c>
 <l>        Line := ImageName + ',' + M1_tx + ',' + M1_ty + ','+ M1_tz + ','+ M2_tx + ','+ M2_ty + ','+ M2_tz + ',' + tx + ',' + ty + ',' + tz + ',' + distance + ',' + error + ',' + Qx + ',' + Qy + ',' + Qz + ',' + Qw + ',' + ElapsedTime + '\n'</l>
