@@ -24,7 +24,7 @@
 <c>* --- Caricamento parametri di calibrazione ---</c>
 <c>* Supponendo che il file JSON sia come nell'esempio</c>
 <c></c>
-<l>gen_cam_par_area_scan_polynomial (0.022981071327594225, -8355.593165482436, 696992927.8266759, -24601284614403, 3.6171082013841898, -0.518270981725917, 3.409715980655691e-6, 3.4500001220294507e-6, 712.5043161392205, 781.7500037920455, 2064, 1544, CameraParam)</l>
+<l>gen_cam_par_area_scan_polynomial (0.008981071327594225, -8355.593165482436, 696992927.8266759, -24601284614403, 3.6171082013841898, -0.518270981725917, 3.409715980655691e-6, 3.4500001220294507e-6, 712.5043161392205, 781.7500037920455, 2064, 1544, CameraParam)</l>
 <c></c>
 <c></c>
 <c>* --- Inizializzazione file CSV ---</c>
@@ -54,8 +54,9 @@
 <c>    * --- Ricerca marker ---</c>
 <l>    try</l>
 <c>        * Cerca primo marker</c>
-<l>        CH_Find_Calib_Pattern_double (Image, CameraParam, caltabFile, WindowHandle, Found1, Marker1Pose, Marker2Pose, Found2, CalibDataID)</l>
-<c>        </c>
+<l>        CH_Find_Calib_Pattern_double (Image, CameraParam, caltabFile, WindowHandle, Found1, Found2, Marker2Pose, Marker1Pose, CalibDataID_1, CalibDataID_2)</l>
+<l>        get_calib_data_observ_contours (Caltab2, CalibDataID_1, 'caltab', 0, 0, 0)</l>
+<c></c>
 <c>        * Verifichiamo che siano stati trovati i due marker</c>
 <l>        if( Found1 == 0 or Found2 == 0)</l>
 <l>            dev_display(Image)</l>

@@ -12,10 +12,11 @@
 </ic>
 <oc>
 <par name="Found1" base_type="ctrl" dimension="0"/>
-<par name="CalibPlatePose2" base_type="ctrl" dimension="0"/>
-<par name="CalibPlatePose1" base_type="ctrl" dimension="0"/>
 <par name="Found2" base_type="ctrl" dimension="0"/>
-<par name="CalibDataID" base_type="ctrl" dimension="0"/>
+<par name="CalibPlatePose1" base_type="ctrl" dimension="0"/>
+<par name="CalibPlatePose2" base_type="ctrl" dimension="0"/>
+<par name="CalibDataID_1" base_type="ctrl" dimension="0"/>
+<par name="CalibDataID_2" base_type="ctrl" dimension="0"/>
 </oc>
 </interface>
 <body>
@@ -27,7 +28,7 @@
 <l>    find_calib_object (Image, CalibDataID, 0, 0, 0, [], [])</l>
 <l>    get_calib_data_observ_points (CalibDataID, 0, 0, 0, RCoord, CCoord, Index, CalibPlatePose1)</l>
 <l>    get_calib_data_observ_contours (Caltab1, CalibDataID, 'caltab', 0, 0, 0)</l>
-<c></c>
+<l>    CalibDataID_1:= CalibDataID</l>
 <l>    gen_circle (Circle, RCoord, CCoord, 50)</l>
 <l>    threshold (Image,AllImage, 0,255)</l>
 <l>    difference (AllImage,Circle, RegionDifference)</l>
@@ -37,7 +38,7 @@
 <l>    get_calib_data_observ_points (CalibDataID, 0, 0, 0, RCoord1, CCoord1, Index1, CalibPlatePose2)</l>
 <c>    </c>
 <l>    get_calib_data_observ_contours (Caltab2, CalibDataID, 'caltab', 0, 0, 0)</l>
-<c>    </c>
+<l>    CalibDataID_2:= CalibDataID    </l>
 <l>    dev_clear_window ()</l>
 <l>    dev_display(Image)</l>
 <l>    dev_disp_3d_coord_system (WinHandle, CameraParams, CalibPlatePose1, 0.02)</l>
@@ -62,7 +63,8 @@
 </body>
 <docu id="CH_Find_Calib_Pattern_double">
 <parameters>
-<parameter id="CalibDataID"/>
+<parameter id="CalibDataID_1"/>
+<parameter id="CalibDataID_2"/>
 <parameter id="CalibObjDescr"/>
 <parameter id="CalibPlatePose1"/>
 <parameter id="CalibPlatePose2"/>
