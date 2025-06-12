@@ -27,8 +27,10 @@
 <l>try</l>
 <l>    find_calib_object (Image, CalibDataID, 0, 0, 0, [], [])</l>
 <l>    get_calib_data_observ_points (CalibDataID, 0, 0, 0, RCoord, CCoord, Index, CalibPlatePose1)</l>
+<c>    </c>
 <l>    get_calib_data_observ_contours (Caltab1, CalibDataID, 'caltab', 0, 0, 0)</l>
-<l>    CalibDataID_1:= CalibDataID</l>
+<c>    </c>
+<c>    *-- applichiamo la maschera sul primo cerchio</c>
 <l>    gen_circle (Circle, RCoord, CCoord, 50)</l>
 <l>    threshold (Image,AllImage, 0,255)</l>
 <l>    difference (AllImage,Circle, RegionDifference)</l>
@@ -38,13 +40,13 @@
 <l>    get_calib_data_observ_points (CalibDataID, 0, 0, 0, RCoord1, CCoord1, Index1, CalibPlatePose2)</l>
 <c>    </c>
 <l>    get_calib_data_observ_contours (Caltab2, CalibDataID, 'caltab', 0, 0, 0)</l>
-<l>    CalibDataID_2:= CalibDataID    </l>
+<l>                gen_circle (Circle, RCoord1, CCoord1, 5)</l>
 <l>    dev_clear_window ()</l>
 <l>    dev_display(Image)</l>
 <l>    dev_disp_3d_coord_system (WinHandle, CameraParams, CalibPlatePose1, 0.02)</l>
 <l>    dev_disp_3d_coord_system (WinHandle, CameraParams, CalibPlatePose2, 0.02)</l>
 <l>    dev_set_color ('green')</l>
-<c>    </c>
+<c>            </c>
 <l>    dev_display (Caltab1)</l>
 <l>    dev_display (Caltab2)</l>
 <c>    </c>
