@@ -1,8 +1,8 @@
 {
-  "input_dir": "../../data/stop_charuco3x3 - reduced domain",
+  "input_dir": "../../data/charuco3x3/no_linear",
   "board_size": 3,
   "calib_file": "../../calibration/camera_calib_opencv.yaml",
-  "output_csv": "../../output/results_opencv_3X3_stop2.csv",
+  "output_csv": "../../output/results_opencv_3X3_no_linear.csv",
   "marker_length_ratio": 0.75,
   "debug": false
 }
