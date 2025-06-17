@@ -9,7 +9,7 @@ from utils import load_camera_calibration,pose_to_matrix, offset_pose_to_center,
 from detect_charuco import create_charuco_boards, detect_two_charuco
 
 # REAL DISTANCE BETWEEN MARKERS: hypotenuse of 110 mm on X and Y (≈ 155.6 mm)
-EXPECTED_DISTANCE_M = 0.15556349 #np.sqrt(0.11**2 + 0.11**2)
+EXPECTED_DISTANCE_M = 0.141421356 #np.sqrt(0.11**2 + 0.11**2)
 
 def main():
     args = parse_args_from_json()
