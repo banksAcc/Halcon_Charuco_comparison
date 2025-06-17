@@ -45,10 +45,34 @@ def detect_single_charuco(img_gray, board, camera_matrix, dist_coeffs):
     Attempts to detect a single CharucoBoard in img_gray.
     Returns (rvec, tvec) if successful, otherwise None.
     """
+    
+    # Crea un oggetto DetectorParameters per la rilevazione dei marker ArUco
+    par = cv2.aruco.DetectorParameters()
+
+    # === Sub-pixel refinement settings ===
+
+    # Metodo per il raffinamento dei corner:
+    # Attiva il raffinamento sub-pixel con cornerSubPix di OpenCV.
+    # Migliora la precisione della posizione dei corner dei marker.
+    par.cornerRefinementMethod = cv2.aruco.CORNER_REFINE_SUBPIX  # Default: CORNER_REFINE_NONE
+
+    # Numero massimo di iterazioni del processo di raffinamento:
+    # Più iterazioni permettono un affinamento più accurato, ma aumentano il tempo di elaborazione.
+    par.cornerRefinementMaxIterations = 60  # Default: 30
+
+    # Accuratezza minima per terminare le iterazioni:
+    # L'algoritmo si ferma se il miglioramento è inferiore a questa soglia.
+    # Valori più bassi danno una precisione maggiore, ma aumentano il tempo di calcolo.
+    par.cornerRefinementMinAccuracy = 0.05  # Default: 0.1
+
+    # Dimensione della finestra di ricerca (in pixel) usata per cercare il massimo sub-pixel:
+    # La finestra reale sarà 2*WinSize + 1 (es: 7 → 15x15 pixel).
+    # Finestra più grande = più accuratezza, ma rischio di confusione se l'immagine è rumorosa.
+    par.cornerRefinementWinSize = 7  # Default: 5
+
     # 1. detect ArUco markers:
     corners, ids, _ = cv2.aruco.detectMarkers(
-        img_gray, ARUCO_DICT, 
-
+        img_gray, ARUCO_DICT, parameters= par
     )
     if ids is None or len(ids) == 0:
         return None

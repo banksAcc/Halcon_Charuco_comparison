@@ -2,7 +2,7 @@
   "input_dir": "../../data/charuco3x3/no_linear",
   "board_size": 3,
   "calib_file": "../../calibration/camera_calib_opencv.yaml",
-  "output_csv": "../../output/results_opencv_3X3_no_linear.csv",
+  "output_csv": "../../output/results_opencv_3X3_no_linear_subpix_acc.csv",
   "marker_length_ratio": 0.75,
   "debug": false
 }
