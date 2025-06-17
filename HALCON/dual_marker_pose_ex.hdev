@@ -14,8 +14,8 @@
 <l>dev_open_window (0, 0, 512, 512, 'black', WindowHandle)</l>
 <c></c>
 <c>* --- Parametri configurabili ---</c>
-<l>imageFolder := '../data/charuco 3x3/non in piano'</l>
-<l>outputCSVFile := '../output/results_halcon_no_linear.csv'</l>
+<l>imageFolder := '../data/stop_charuco3x3'</l>
+<l>outputCSVFile := '../output/results_halcon_stop_01.csv'</l>
 <l>caltabFile := './caltab_075mm.descr'</l>
 <l>markerDistanceNominal := 0.15556349</l>
 <l>import './CH_Find_Calib_Pattern_double.hdvp'</l>
@@ -23,7 +23,9 @@
 <c>* --- Caricamento parametri di calibrazione ---</c>
 <c>* Supponendo che il file JSON sia come nell'esempio</c>
 <c></c>
-<l>gen_cam_par_area_scan_polynomial (0.0129092, 527.412, -32029000.0, 1234450000000.0, 0.15534, 0.0162498, 3.45167e-06, 3.45e-06, 967.316, 738.877, 2064, 1544, CameraParam)</l>
+<l>*gen_cam_par_area_scan_polynomial (0.0129092, 527.412, -32029000.0, 1234450000000.0, 0.15534, 0.0162498, 3.45167e-06, 3.45e-06, 967.316, 738.877, 2064, 1544, CameraParam)</l>
+<c></c>
+<l>read_cam_par( '/home/comau/Scrivania/progetto borsa 1 /GIT_Halcon_Charuco_comparison/HALCON/calibrazione_halcon.dat', CameraParam)</l>
 <c></c>
 <c>* --- Inizializzazione file CSV ---</c>
 <l>file_exists(outputCSVFile, FileExists)</l>
