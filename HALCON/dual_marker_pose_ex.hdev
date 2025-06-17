@@ -23,7 +23,7 @@
 <c>* --- Caricamento parametri di calibrazione ---</c>
 <c>* Supponendo che il file JSON sia come nell'esempio</c>
 <c></c>
-<l>gen_cam_par_area_scan_polynomial (0.012489543455098671, 683.07033875145, 1444616.9279945453, -577392161674.6691, -0.18197237434306351, -0.22865241980116785, 3.4472435195795457e-06, 3.4500001220294507e-06, 1054.9456419782853, 785.4829579841513, 2064, 1544, CameraParam)</l>
+<l>gen_cam_par_area_scan_polynomial (0.0129092, 527.412, -32029000.0, 1234450000000.0, 0.15534, 0.0162498, 3.45167e-06, 3.45e-06, 967.316, 738.877, 2064, 1544, CameraParam)</l>
 <c></c>
 <c>* --- Inizializzazione file CSV ---</c>
 <l>file_exists(outputCSVFile, FileExists)</l>
