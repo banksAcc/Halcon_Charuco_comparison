@@ -177,3 +177,5 @@ cython_debug/
 # da non passare nel git
 data/*
 !data/.gitkeep
+calibration/calib_charuco/*
+calibration/calib_halcon/*
