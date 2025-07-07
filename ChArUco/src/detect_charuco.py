@@ -58,17 +58,17 @@ def detect_single_charuco(img_gray, board, camera_matrix, dist_coeffs):
 
     # Numero massimo di iterazioni del processo di raffinamento:
     # Più iterazioni permettono un affinamento più accurato, ma aumentano il tempo di elaborazione.
-    par.cornerRefinementMaxIterations = 60  # Default: 30
+    par.cornerRefinementMaxIterations = 10000  # Default: 30
 
     # Accuratezza minima per terminare le iterazioni:
     # L'algoritmo si ferma se il miglioramento è inferiore a questa soglia.
     # Valori più bassi danno una precisione maggiore, ma aumentano il tempo di calcolo.
-    par.cornerRefinementMinAccuracy = 0.05  # Default: 0.1
+    par.cornerRefinementMinAccuracy = 0.001  # Default: 0.1
 
     # Dimensione della finestra di ricerca (in pixel) usata per cercare il massimo sub-pixel:
     # La finestra reale sarà 2*WinSize + 1 (es: 7 → 15x15 pixel).
     # Finestra più grande = più accuratezza, ma rischio di confusione se l'immagine è rumorosa.
-    par.cornerRefinementWinSize = 7  # Default: 5
+    par.cornerRefinementWinSize = 15  # Default: 5
 
     # 1. detect ArUco markers:
     corners, ids, _ = cv2.aruco.detectMarkers(
