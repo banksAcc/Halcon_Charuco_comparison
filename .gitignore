@@ -179,3 +179,4 @@ data/*
 !data/.gitkeep
 calibration/calib_charuco/*
 calibration/calib_halcon/*
+venv

@@ -1,7 +1,7 @@
 import numpy as np
 
 # Carica il file .npz
-data = np.load('file.npz')
+data = np.load('data/calib_data.npz')
 
 # Itera su tutte le chiavi e stampa nome + contenuto
 for key in data.files:
