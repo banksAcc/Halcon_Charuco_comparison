@@ -46,23 +46,18 @@ def calibrate_from_images(image_folder, output_json_path):
         return
 
     print("⚙️ Calibrazione in corso...")
+    
+    flags = cv2.CALIB_RATIONAL_MODEL
     rms, camera_matrix, dist_coeffs, rvecs, tvecs = aruco.calibrateCameraCharuco(
         charucoCorners=all_corners,
         charucoIds=all_ids,
         board=board,
         imageSize=image_size,
         cameraMatrix=None,
-        distCoeffs=None
+        distCoeffs=None,
+        flags=flags
     )
-    os.makedirs('data', exist_ok=True)
 
-    np.savez("data/calib_data.npz",
-                 cameraMatrix=camera_matrix,
-                 distCoeffs=dist_coeffs,
-                 rvecs=rvecs,
-                 tvecs=tvecs,
-                 rms=rms)
-    
     # Estrazione dei parametri nel formato desiderato
     k = dist_coeffs.flatten()
     calib_data = {
@@ -91,4 +86,4 @@ def calibrate_from_images(image_folder, output_json_path):
     print(f"✅ Calibrazione completata. Dati salvati in {output_json_path}")
 
 # ESEMPIO USO:
-calibrate_from_images("../../data/calib_charuco", "calib_output.json")
+calibrate_from_images("../../calibration/calib_charuco/other", "calib_output.json")
