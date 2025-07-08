@@ -3,6 +3,6 @@
   "board_size": 3,
   "calib_file": "../../calibration/camera_calib_opencv.yaml",
   "output_csv": "../../output/test.csv",
-  "marker_length_ratio": 0.875,
+  "marker_length_ratio": 0.75,
   "debug": true
 }

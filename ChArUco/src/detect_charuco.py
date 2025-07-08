@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # We always use the same dictionary when printing the boards
-ARUCO_DICT = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_7X7_100)
+ARUCO_DICT = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_5X5_100)
 
 def create_charuco_boards(board_size, board_physical_size, marker_length_ratio):
     """
