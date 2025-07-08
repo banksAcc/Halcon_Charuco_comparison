@@ -44,7 +44,7 @@ plt.axhline(media_halcon, color='#91d64d', linestyle='--', linewidth=1)
 
 # Etichette, titolo, legenda e griglia
 plt.xlabel("Campioni")
-plt.ylabel("Elaps Time")
+plt.ylabel("Elaps Time (s)")
 plt.title("Tempi di Elaborazione")
 plt.legend()
 plt.grid(True, linestyle=':', linewidth=0.5)
@@ -64,7 +64,7 @@ plt.axhline(y=media_normal, color='#d39039', linestyle='--', linewidth=1, label=
 
 # Etichette e stile
 plt.xlabel("Campioni")
-plt.ylabel("Elaps Time")
+plt.ylabel("Elaps Time (s)")
 plt.title("ChArUco vs ChArUco SubPixel")
 plt.grid(True, linestyle=':', linewidth=0.5)
 plt.legend()
@@ -138,7 +138,7 @@ bars = plt.bar(
 # Aggiungi legenda usando le barre come handles
 plt.legend(bars, labels, title="Metodo (Dev. Std.)")
 
-plt.ylabel("Deviazione standard")
+plt.ylabel("Variazione (s)")
 plt.title("Oscillazioni Elaps Time")
 plt.grid(True, axis='y', linestyle=':', linewidth=0.5)
 plt.tight_layout()

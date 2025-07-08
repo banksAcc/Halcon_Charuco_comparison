@@ -40,7 +40,8 @@ x_dist_halcon = range(1, len(dist_mis_halcon) + 1)
 
 # PRIMO GRAFICO - RIPETIBILITà SU CAMPINI A 0; Halcon vs. ChArUco (normale)
 # # --- Configura figure e assi spezzati ---
-fig, (ax_top, ax_bottom) = plt.subplots(2, 1, sharex=True, figsize=(20, 6), gridspec_kw={'height_ratios': [2, 1]})
+fig, (ax_top, ax_bottom) = plt.subplots(2, 1, sharex=True, figsize=(20, 6), gridspec_kw={'height_ratios': [1, 1]})
+fig.subplots_adjust(hspace=0.1)
 
 # --- Plotta i dati su entrambi gli assi ---
 ax_top.plot(x_norm, valori_normal, marker='o', linestyle='-', color='#d39039', label='ChArUco', linewidth=1)
@@ -54,8 +55,8 @@ ax_top.axhline(y=media_normal, color='#d39039', linestyle='--', linewidth=1, lab
 ax_top.axhline(y=media_halcon, color='#91d64d', linestyle='--', linewidth=1, label=f'Halcon: {media_halcon:.4f}')
 
 # --- Limiti degli assi ---
-ax_bottom.set_ylim(0.15, 0.26)
-ax_top.set_ylim(0.74, max(max(valori_normal), max(valori_halcon)) + 0.01)
+ax_bottom.set_ylim(0.2, 0.25)
+ax_top.set_ylim(0.75, 0.8)
 
 # --- Nascondi spines per creare effetto “spezzato” ---
 ax_top.spines['bottom'].set_visible(False)
@@ -75,7 +76,7 @@ ax_bottom.plot((1 - d, 1 + d), (1 - d, 1 + d), **kwargs)
 
 # --- Etichette ---
 ax_bottom.set_xlabel("Campioni")
-ax_top.set_ylabel("Errore")
+ax_top.set_ylabel("Errore (mm)")
 ax_top.set_title("Variazione dell'errore - Ripetibilità")
 ax_top.legend()
 ax_top.grid(True, linestyle=':', linewidth=0.5)
@@ -92,7 +93,7 @@ plt.axhline(y=media_normal, color='#d39039', linestyle='--', linewidth=1, label=
 
 # Etichette e stile
 plt.xlabel("Campioni")
-plt.ylabel("Error")
+plt.ylabel("Error (mm)")
 plt.title("ChArUco vs ChArUco SubPixel")
 plt.grid(True, linestyle=':', linewidth=0.5)
 plt.legend()
@@ -114,8 +115,8 @@ plt.axhline(y=141.421356, color='red', linestyle='--', linewidth=1, label=f'Real
 
 
 # Etichette e stile
-plt.xlabel("Misurazione")
-plt.ylabel("Stima")
+plt.xlabel("Campioni")
+plt.ylabel("Stima (mm)")
 plt.title("Variazione della Misura - Ripetibilità")
 plt.grid(True, linestyle=':', linewidth=0.5)
 plt.legend()
@@ -188,8 +189,7 @@ bars = plt.bar(
 
 # Aggiungi legenda usando le barre come handles
 plt.legend(bars, labels, title="Metodo (Dev. Std.)")
-
-plt.ylabel("Deviazione standard")
+plt.ylabel("Variazione (mm)")
 plt.title("Stima della stabilità per metodo")
 plt.grid(True, axis='y', linestyle=':', linewidth=0.5)
 plt.tight_layout()

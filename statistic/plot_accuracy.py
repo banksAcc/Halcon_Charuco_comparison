@@ -57,7 +57,7 @@ plt.axvline(600, color='green', linestyle='-.', linewidth=1, label='+10/-10')
 
 plt.ylim(0, max(max(valori_normal), max(valori_halcon)) + 0.01)
 plt.xlabel("Campioni")
-plt.ylabel("Errore")
+plt.ylabel("Errore (mm)")
 plt.title("Variazione dell'errore - Accuratezza")
 plt.legend()
 plt.grid(True, linestyle=':', linewidth=0.5)
@@ -81,7 +81,7 @@ plt.axvline(400, color='blue',  linestyle='-.', linewidth=1, label='-10/0')
 plt.axvline(600, color='green', linestyle='-.', linewidth=1, label='+10/-10')
 
 plt.xlabel("Campioni")
-plt.ylabel("Errore")
+plt.ylabel("Errore (mm)")
 plt.title("ChArUco vs ChArUco SubPixel - Accuratezza")
 plt.legend()
 plt.grid(True, linestyle=':', linewidth=0.5)
@@ -177,7 +177,7 @@ bars = plt.bar(
 plt.legend(bars, labels, title="Metodo (Dev. Std.)")
 
 # --- Etichette e titolo ---
-plt.ylabel("Deviazione standard - Accuratezza")
+plt.ylabel("Variazione (mm)")
 plt.title("Stima della stabilità per metodo")
 plt.grid(True, axis='y', linestyle=':', linewidth=0.5)
 
