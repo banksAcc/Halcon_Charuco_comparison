@@ -1,8 +1,8 @@
 {
-  "input_dir": "../../data/set_0",
+  "input_dir": "../../data/test",
   "board_size": 3,
   "calib_file": "../../calibration/camera_calib_opencv.yaml",
-  "output_csv": "../../output/set_0_charuco_sub.csv",
-  "marker_length_ratio": 0.75,
-  "debug": false
+  "output_csv": "../../output/test.csv",
+  "marker_length_ratio": 0.875,
+  "debug": true
 }

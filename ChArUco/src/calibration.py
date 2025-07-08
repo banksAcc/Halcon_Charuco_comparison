@@ -54,7 +54,13 @@ def calibrate_from_images(image_folder, output_json_path):
         cameraMatrix=None,
         distCoeffs=None
     )
-
+    np.savez("data/calib_data.npz",
+                 cameraMatrix=camera_matrix,
+                 distCoeffs=dist_coeffs,
+                 rvecs=rvecs,
+                 tvecs=tvecs,
+                 rms=rms)
+    
     # Estrazione dei parametri nel formato desiderato
     k = dist_coeffs.flatten()
     calib_data = {
@@ -83,4 +89,4 @@ def calibrate_from_images(image_folder, output_json_path):
     print(f"✅ Calibrazione completata. Dati salvati in {output_json_path}")
 
 # ESEMPIO USO:
-calibrate_from_images("../../calibration/calib_charuco/other", "calib_output.json")
+calibrate_from_images("../../calibration/calib_charuco", "calib_output.json")
