@@ -1,6 +1,4 @@
-opencv-contrib-python>=4.11.0.86
-numpy
-pyyaml
-scipy
 pandas
 matplotlib
+scipy
+numpy
