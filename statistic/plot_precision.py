@@ -7,7 +7,7 @@ from glob import glob
 
 # Leggi il CSV
 df_subpixel = pd.read_csv("../output/set_+10_charuco_sub.csv")
-df_normal = pd.read_csv("../output/set_+10_charuco_new.csv")
+df_normal = pd.read_csv("../output/new_set_+10_charuco.csv")
 df_halcon = pd.read_csv("../output/set_+10_halcon.csv")
 
 # Estrai colonna 11 (ERRORE DELLA RILEVAZIONE)

@@ -1,8 +1,8 @@
 {
-  "input_dir": "../../data/set_+10",
+  "input_dir": "../../data/new_set/+10",
   "board_size": 3,
   "calib_file": "../../calibration/camera_calib_opencv.yaml",
-  "output_csv": "../../output/set_+10_charuco_new.csv",
+  "output_csv": "../../output/new_set_+10_charuco.csv",
   "marker_length_ratio": 0.75,
   "debug": false
 }
