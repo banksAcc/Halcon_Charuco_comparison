@@ -17,7 +17,7 @@
 <l>imageFolder := '../data/dataset_rz35/-10_pos'</l>
 <l>outputCSVFile := '../output/rz35_-10_pos.csv'</l>
 <l>caltabFile := './caltab_075mm.descr'</l>
-<l>markerDistanceNominal := 0.141421356</l>
+<l>markerDistanceNominal := 0.1308625232</l>
 <l>import './CH_Find_Calib_Pattern_double.hdvp'</l>
 <c></c>
 <c>* --- Caricamento parametri di calibrazione ---</c>
