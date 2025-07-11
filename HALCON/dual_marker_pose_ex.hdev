@@ -14,8 +14,8 @@
 <l>dev_open_window (0, 0, 512, 512, 'black', WindowHandle)</l>
 <c></c>
 <c>* --- Parametri configurabili ---</c>
-<l>imageFolder := '../data/dataset_rz35/-10_pos'</l>
-<l>outputCSVFile := '../output/rz35_-10_pos.csv'</l>
+<l>imageFolder := '../data/new_set/-10'</l>
+<l>outputCSVFile := '../output/set_-10_halcon.csv'</l>
 <l>caltabFile := './caltab_075mm.descr'</l>
 <l>markerDistanceNominal := 0.1308625232</l>
 <l>import './CH_Find_Calib_Pattern_double.hdvp'</l>
