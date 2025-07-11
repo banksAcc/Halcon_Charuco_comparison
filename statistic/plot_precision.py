@@ -7,7 +7,7 @@ from glob import glob
 
 # Leggi il CSV
 df_subpixel = pd.read_csv("../output/set_+10_charuco_sub.csv")
-df_normal = pd.read_csv("../output/new_set_+10_charuco.csv")
+df_normal = pd.read_csv("../output/set_+10_charuco.csv")
 df_halcon = pd.read_csv("../output/set_+10_halcon.csv")
 
 # Estrai colonna 11 (ERRORE DELLA RILEVAZIONE)
@@ -40,47 +40,47 @@ x_dist_halcon = range(1, len(dist_mis_halcon) + 1)
 
 # PRIMO GRAFICO - RIPETIBILITà SU CAMPINI A 0; Halcon vs. ChArUco (normale)
 # # --- Configura figure e assi spezzati ---
-fig, (ax_top, ax_bottom) = plt.subplots(2, 1, sharex=True, figsize=(20, 6), gridspec_kw={'height_ratios': [1, 1]})
+fig, ax_top = plt.subplots(figsize=(20, 6))  # solo un asse
 fig.subplots_adjust(hspace=0.1)
 
 # --- Plotta i dati su entrambi gli assi ---
 ax_top.plot(x_norm, valori_normal, marker='o', linestyle='-', color='#d39039', label='ChArUco', linewidth=1)
 ax_top.plot(x_halcon, valori_halcon, marker='o', linestyle='-', color='#91d64d', label='Halcon', linewidth=1)
 
-ax_bottom.plot(x_norm, valori_normal, marker='o', linestyle='-', color='#d39039', linewidth=1)
-ax_bottom.plot(x_halcon, valori_halcon, marker='o', linestyle='-', color='#91d64d', linewidth=1)
+# ax_bottom.plot(x_norm, valori_normal, marker='o', linestyle='-', color='#d39039', linewidth=1)
+# ax_bottom.plot(x_halcon, valori_halcon, marker='o', linestyle='-', color='#91d64d', linewidth=1)
 
 # --- Linee medie (solo se stanno in uno dei due assi) ---
 ax_top.axhline(y=media_normal, color='#d39039', linestyle='--', linewidth=1, label=f'ChArUco: {media_normal:.4f}')
 ax_top.axhline(y=media_halcon, color='#91d64d', linestyle='--', linewidth=1, label=f'Halcon: {media_halcon:.4f}')
 
 # --- Limiti degli assi ---
-ax_bottom.set_ylim(0.2, 0.25)
-ax_top.set_ylim(0.75, 0.8)
+# ax_bottom.set_ylim(0.2, 0.25)
+# ax_top.set_ylim(0.75, 0.8)
 
 # --- Nascondi spines per creare effetto “spezzato” ---
-ax_top.spines['bottom'].set_visible(False)
-ax_bottom.spines['top'].set_visible(False)
-ax_top.tick_params(labeltop=False)
-ax_bottom.xaxis.tick_bottom()
+# ax_top.spines['bottom'].set_visible(False)
+# ax_bottom.spines['top'].set_visible(False)
+# ax_top.tick_params(labeltop=False)
+# ax_bottom.xaxis.tick_bottom()
 
 # --- Aggiungi diagonali ---
-d = 0.001  # dimensione delle diagonali
-kwargs = dict(transform=ax_top.transAxes, color='k', clip_on=False)
-ax_top.plot((-d, +d), (-d, +d), **kwargs)
-ax_top.plot((1 - d, 1 + d), (-d, +d), **kwargs)
+# d = 0.001  # dimensione delle diagonali
+# kwargs = dict(transform=ax_top.transAxes, color='k', clip_on=False)
+# ax_top.plot((-d, +d), (-d, +d), **kwargs)
+# ax_top.plot((1 - d, 1 + d), (-d, +d), **kwargs)
 
-kwargs.update(transform=ax_bottom.transAxes)
-ax_bottom.plot((-d, +d), (1 - d, 1 + d), **kwargs)
-ax_bottom.plot((1 - d, 1 + d), (1 - d, 1 + d), **kwargs)
+# kwargs.update(transform=ax_bottom.transAxes)
+# ax_bottom.plot((-d, +d), (1 - d, 1 + d), **kwargs)
+# ax_bottom.plot((1 - d, 1 + d), (1 - d, 1 + d), **kwargs)
 
 # --- Etichette ---
-ax_bottom.set_xlabel("Campioni")
+ax_top.set_xlabel("Campioni")
 ax_top.set_ylabel("Errore (mm)")
 ax_top.set_title("Variazione dell'errore - Ripetibilità")
 ax_top.legend()
 ax_top.grid(True, linestyle=':', linewidth=0.5)
-ax_bottom.grid(True, linestyle=':', linewidth=0.5)
+# ax_top.grid(True, linestyle=':', linewidth=0.5)
 
 # SECONDO GRAFICO - RIPETIBILITà SU CAMPINI A 0; ChArUco (normale) vs ChArUco (subpixel refinement)
 plt.figure(figsize=(20, 5))
@@ -111,7 +111,7 @@ plt.plot(x_dist_halcon, dist_mis_halcon, marker='o', linestyle='-', color='#91d6
 # Linee della media
 plt.axhline(y=media_dist_normal, color='#d39039', linestyle='--', linewidth=1, label=f'ChArUco: {media_dist_normal:.4f}')
 plt.axhline(y=media_dist_halcon, color='#91d64d', linestyle='--', linewidth=1, label=f'Halcon: {media_dist_halcon:.4f}')
-plt.axhline(y=141.421356, color='red', linestyle='--', linewidth=1, label=f'Real Value')
+plt.axhline(y=130.8625232, color='red', linestyle='--', linewidth=1, label=f'Real Value')
 
 
 # Etichette e stile
